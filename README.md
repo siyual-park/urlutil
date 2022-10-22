@@ -27,4 +27,4 @@ urlutil.Match("/params/:foo", "/params/1") // true, map[string]string{"foo": "1"
 ``` 
 
 ## Special thanks
-Some code for this package key was taken from https://github.com/labstack/echo
+Some code for this package was taken from https://github.com/labstack/echo

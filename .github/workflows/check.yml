@@ -22,7 +22,31 @@ on:
   workflow_dispatch:
 
 jobs:
+  lint:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        go: [ 1.19 ]
+    name: Lint ${{ matrix.os }} @ Go ${{ matrix.go }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Set up Go ${{ matrix.go }}
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: Install Dependencies
+        run: |
+          make init
+          make lint
+
   test:
+    needs: lint
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
@@ -42,12 +66,8 @@ jobs:
         with:
           go-version: ${{ matrix.go }}
 
-      - name: Install Dependencies
-        run: make init
-
       - name: Run Tests
         run: |
-          make lint
           go test -race --coverprofile=coverage.coverprofile --covermode=atomic ./...
 
       - name: Upload coverage to Codecov
