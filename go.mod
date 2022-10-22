@@ -1,4 +1,4 @@
-module github.com/siyual-park/pathutil
+module github.com/siyual-park/urlutil
 
 go 1.18
 
