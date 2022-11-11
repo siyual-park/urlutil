@@ -44,3 +44,40 @@ assert.Equal(t, "any_string", util.UnPtr(ptr))
 
 assert.Equal(t, "", util.UnPtr[string](nil))
 ```
+
+### Access
+It gives you smart access to any type of value.
+
+#### rules
+- find getter in interface. (when key name is "name", getter method name is "Name")
+- find map like access method. (Get(name string), Load(name string))
+- find public struct property.
+- find slice or array property.
+- find map property.
+- un-pointer and research.
+
+#### Get
+```go
+v := map[string]any{"k1": map[string]any{"k2": 1}}
+r, ok := Get[int](v, "k1.k2")
+assert.True(t, ok)
+assert.Equal(t, 1, r)
+``` 
+
+```go
+v := map[string]any{"k1": func() *sync.Map {
+    m := sync.Map{}
+    m.Store("k2", 1)
+    return &m
+}()}
+r, ok := Get[int](v, "k1.k2")
+assert.True(t, ok)
+assert.Equal(t, 1, r)
+```
+
+#### Set
+```go
+v := map[string]any{"k1": map[string]any{}}
+ok := Set[int](v, "k1.k2", 1)
+assert.True(t, ok)
+``` 
