@@ -83,8 +83,6 @@ assert.True(t, ok)
 ``` 
 
 ### Iterator
-Helps convert iterable value.
-
 #### KeyTo
 ```go
 v := map[string]int{"a": 1, "b": 2}
@@ -107,4 +105,12 @@ r := util.ValueTo(v, func(value any) any {
     return value
 })
 assert.Equal(t, map[string]int{"a": 2, "b": 3}, r)
+``` 
+
+### Copy
+#### DeepCopy
+```go
+v := map[string]int{"a": 1, "b": 2}
+r := util.DeepCopy(v)
+assert.Equal(t, v, r)
 ``` 
