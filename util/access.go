@@ -1,7 +1,6 @@
 package util
 
 import (
-	"errors"
 	"github.com/iancoleman/strcase"
 	"reflect"
 	"regexp"
@@ -14,11 +13,6 @@ var (
 	anyType  = reflect.ValueOf(&anyValue).Type().Elem()
 
 	numberSubPath = regexp.MustCompile(`\[([0-9]+)\]`)
-)
-
-var (
-	ErrCodeInvalidAccess = "invalid_access"
-	ErrInvalidAccess     = errors.New(ErrCodeInvalidAccess)
 )
 
 func Get[T any](value any, key string) (T, bool) {
