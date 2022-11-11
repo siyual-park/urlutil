@@ -1,7 +1,7 @@
-package urlutil
+package util
 
 type (
-	Matcher struct {
+	PathMatcher struct {
 		tree *node
 	}
 
@@ -28,8 +28,8 @@ const (
 	anyLabel   = byte('*')
 )
 
-func Match(pattern string, path string) (bool, map[string]string) {
-	m := NewMatcher()
+func MatchPath(pattern string, path string) (bool, map[string]string) {
+	m := NewPathMatcher()
 	m.Add(pattern)
 	res, params := m.Match(path)
 	if res != pattern {
@@ -38,13 +38,13 @@ func Match(pattern string, path string) (bool, map[string]string) {
 	return true, params
 }
 
-func NewMatcher() *Matcher {
-	return &Matcher{
+func NewPathMatcher() *PathMatcher {
+	return &PathMatcher{
 		tree: &node{},
 	}
 }
 
-func (m *Matcher) Add(path string) {
+func (m *PathMatcher) Add(path string) {
 	var paramNames []string
 	pristinePath := path
 
@@ -81,7 +81,7 @@ func (m *Matcher) Add(path string) {
 	m.insert(path, staticKind, pristinePath, paramNames)
 }
 
-func (m *Matcher) Remove(path string) bool {
+func (m *PathMatcher) Remove(path string) bool {
 	currentNode := m.tree
 	var nodeToRemove *node
 	prefixLen := 0
@@ -155,7 +155,7 @@ func (m *Matcher) Remove(path string) bool {
 	return true
 }
 
-func (m *Matcher) Match(origin string) (string, map[string]string) {
+func (m *PathMatcher) Match(origin string) (string, map[string]string) {
 	currentNode := m.tree
 
 	var (
@@ -300,7 +300,7 @@ func (m *Matcher) Match(origin string) (string, map[string]string) {
 	return currentNode.pristinePath, params
 }
 
-func (m *Matcher) insert(path string, t kind, pristinePath string, paramNames []string) {
+func (m *PathMatcher) insert(path string, t kind, pristinePath string, paramNames []string) {
 	currentNode := m.tree
 	search := path
 

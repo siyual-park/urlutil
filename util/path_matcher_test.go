@@ -1,11 +1,11 @@
-package urlutil
+package util
 
 import (
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestMatch(t *testing.T) {
+func TestMatchPath(t *testing.T) {
 	testCases := []struct {
 		whenPath    string
 		whenPattern string
@@ -40,15 +40,15 @@ func TestMatch(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.whenPath, func(t *testing.T) {
-			ok, param := Match(tc.whenPattern, tc.whenPath)
+			ok, param := MatchPath(tc.whenPattern, tc.whenPath)
 			assert.True(t, ok)
 			assert.Equal(t, tc.expectParam, param)
 		})
 	}
 }
 
-func TestMatcher_Match(t *testing.T) {
-	m := NewMatcher()
+func TestPathMatcher_Match(t *testing.T) {
+	m := NewPathMatcher()
 
 	testCases := []struct {
 		whenPath    string
@@ -92,8 +92,8 @@ func TestMatcher_Match(t *testing.T) {
 	}
 }
 
-func TestMatcher_Remove(t *testing.T) {
-	m := NewMatcher()
+func TestPathMatcher_Remove(t *testing.T) {
+	m := NewPathMatcher()
 
 	testCases := []struct {
 		whenPath string

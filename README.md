@@ -1,16 +1,17 @@
-# urlutil
-Package urlutil provides URL utility functions, complementing the more common ones in the url package.
+# Go Utilities
+Reusable collection of golang utility.
 
 ## Install
 ```shell
-go get github.com/siyual-park/urlutil
+go get github.com/siyual-park/go-util/util
 ```
 
+
 ## Basic Example
-### Matcher
+### Path Matcher
 Parse the path, and find the best candidate path.
 ```go
-matcher := urlutil.NewMatcher()
+matcher := util.NewPathMatcher()
 
 matcher.Add("/static")
 matcher.Add("/static/*")
@@ -23,8 +24,8 @@ matcher.Match("/params/1") // "/params/:foo", map[string]string{"foo": "1"}
 
 Match only one path.
 ```go
-urlutil.Match("/params/:foo", "/params/1") // true, map[string]string{"foo": "1"}
+util.MatchPath("/params/:foo", "/params/1") // true, map[string]string{"foo": "1"}
 ``` 
 
-## Special thanks
+#### Special thanks
 Some code for this package was taken from https://github.com/labstack/echo
