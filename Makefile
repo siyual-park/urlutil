@@ -1,4 +1,4 @@
-PKG := "github.com/siyual-park/urlutil"
+PKG := "github.com/siyual-park/go-util"
 PKG_LIST := $(shell go list ${PKG}/...)
 
 tag:

@@ -29,3 +29,18 @@ util.MatchPath("/params/:foo", "/params/1") // true, map[string]string{"foo": "1
 
 #### Special thanks
 Some code for this package was taken from https://github.com/labstack/echo
+
+### Pointer
+Helps convert the value of Pointer.
+
+```go
+ptr := util.Ptr("any_string")
+assert.Equal(t, "any_string", *ptr)
+``` 
+
+```go
+ptr := util.Ptr("any_string")
+assert.Equal(t, "any_string", util.UnPtr(ptr))
+
+assert.Equal(t, "", util.UnPtr[string](nil))
+```
