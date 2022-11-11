@@ -59,7 +59,7 @@ It gives you smart access to any type of value.
 #### Get
 ```go
 v := map[string]any{"k1": map[string]any{"k2": 1}}
-r, ok := Get[int](v, "k1.k2")
+r, ok := util.Get[int](v, "k1.k2")
 assert.True(t, ok)
 assert.Equal(t, 1, r)
 ``` 
@@ -70,7 +70,7 @@ v := map[string]any{"k1": func() *sync.Map {
     m.Store("k2", 1)
     return &m
 }()}
-r, ok := Get[int](v, "k1.k2")
+r, ok := util.Get[int](v, "k1.k2")
 assert.True(t, ok)
 assert.Equal(t, 1, r)
 ```
@@ -78,6 +78,33 @@ assert.Equal(t, 1, r)
 #### Set
 ```go
 v := map[string]any{"k1": map[string]any{}}
-ok := Set[int](v, "k1.k2", 1)
+ok := util.Set[int](v, "k1.k2", 1)
 assert.True(t, ok)
+``` 
+
+### Iterator
+Helps convert iterable value.
+
+#### KeyTo
+```go
+v := map[string]int{"a": 1, "b": 2}
+r := util.KeyTo(v, func(key any) any {
+    if k, ok := key.(string); ok {
+        return "_" + k
+    }
+    return key
+})
+assert.Equal(t, map[string]int{"_a": 1, "_b": 2}, r)
+``` 
+
+#### ValueTo
+```go
+v := map[string]int{"a": 1, "b": 2}
+r := util.ValueTo(v, func(value any) any {
+    if v, ok := value.(int); ok {
+        return v + 1
+    }
+    return value
+})
+assert.Equal(t, map[string]int{"a": 2, "b": 3}, r)
 ``` 
