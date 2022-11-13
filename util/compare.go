@@ -56,6 +56,8 @@ func compare(x, y reflect.Value) (int, bool) {
 		}
 	} else {
 		switch k1 {
+		case nullKind:
+			return 0, true
 		case floatKind:
 			return compareStrict(x.Float(), y.Float()), true
 		case intKind:
