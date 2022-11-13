@@ -177,7 +177,7 @@ func (m *PathMatcher) Match(origin string) (string, map[string]string) {
 		}
 
 		if fromKind == staticKind {
-			// when backtracking is done from static kind block we did not change search so nothing to restore
+			// when backtracking is done from static basisKind block we did not change search so nothing to restore
 			return
 		}
 

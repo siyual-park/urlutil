@@ -5,7 +5,7 @@ import (
 	"encoding/gob"
 )
 
-func DeepCopy[V any](source V) V {
+func Copy[V any](source V) V {
 	var target V
 
 	var buffer bytes.Buffer

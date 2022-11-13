@@ -50,10 +50,10 @@ func set(source reflect.Value, path []string, value reflect.Value) bool {
 		}
 		parent = his[0]
 	}
-	parent = reflect.ValueOf(parent.Interface())
+	parent = rawValue(parent)
 	parentType := parent.Type()
 
-	value = reflect.ValueOf(value.Interface())
+	value = rawValue(value)
 
 	if parentType.Implements(anyType) {
 		call := func(reflectMethod reflect.Method, args []reflect.Value) bool {

@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestDeepCopy(t *testing.T) {
+func TestCopy(t *testing.T) {
 	testCases := []struct {
 		when any
 	}{
@@ -34,12 +34,12 @@ func TestDeepCopy(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		res := DeepCopy(tc.when)
+		res := Copy(tc.when)
 		assert.Equal(t, tc.when, res)
 	}
 }
 
-func BenchmarkDeepCopy(b *testing.B) {
+func BenchmarkCopy(b *testing.B) {
 	testCases := []struct {
 		when any
 	}{
@@ -67,7 +67,7 @@ func BenchmarkDeepCopy(b *testing.B) {
 
 	for i, tc := range testCases {
 		b.Run(strconv.Itoa(i), func(b *testing.B) {
-			DeepCopy(tc.when)
+			Copy(tc.when)
 		})
 	}
 }

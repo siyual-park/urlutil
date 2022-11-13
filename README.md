@@ -108,9 +108,24 @@ assert.Equal(t, map[string]int{"a": 2, "b": 3}, r)
 ``` 
 
 ### Copy
-#### DeepCopy
+#### Copy
 ```go
 v := map[string]int{"a": 1, "b": 2}
-r := util.DeepCopy(v)
+r := util.Copy(v)
 assert.Equal(t, v, r)
+``` 
+
+### Compare
+#### Equal
+```go
+x := map[string]int{"a": 1, "b": 2}
+y := map[string]int{"a": 1, "b": 2}
+assert.True(t, util.Equal(x, y))
+``` 
+
+#### Compare
+```go
+x := []any{0, 1, "2"}
+y := []any{0, 1, "3"}
+assert.Equal(t, -1, util.Compare(x, y))
 ``` 
