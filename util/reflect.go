@@ -1,6 +1,8 @@
 package util
 
-import "reflect"
+import (
+	"reflect"
+)
 
 type basisKind int
 
@@ -17,6 +19,10 @@ const (
 	iterableKind
 	boolKind
 	pointerKind
+)
+
+var (
+	anyType = reflect.ValueOf((*any)(nil)).Type().Elem()
 )
 
 func basicKind(v reflect.Value) basisKind {

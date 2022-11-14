@@ -9,9 +9,6 @@ import (
 )
 
 var (
-	anyValue any
-	anyType  = reflect.ValueOf(&anyValue).Type().Elem()
-
 	numberSubPath = regexp.MustCompile(`\[([0-9]+)\]`)
 )
 
@@ -38,22 +35,19 @@ func parseKey(key string) []string {
 func set(source reflect.Value, path []string, value reflect.Value) bool {
 	current := path[len(path)-1]
 
-	var parentPath []string
 	parent := source
-	var his []reflect.Value
-	var ok bool
 	if len(path) > 1 {
-		parentPath = path[:len(path)-1]
-		his, ok = get(source, parentPath)
-		if !ok {
+		parentPath := path[:len(path)-1]
+		if his, ok := get(source, parentPath); ok {
+			parent = his[0]
+		} else {
 			return false
 		}
-		parent = his[0]
 	}
+
 	parent = rawValue(parent)
 	parentType := parent.Type()
-
-	value = rawValue(value)
+	parentKind := basicKind(parent)
 
 	if parentType.Implements(anyType) {
 		call := func(reflectMethod reflect.Method, args []reflect.Value) bool {
@@ -104,12 +98,14 @@ func set(source reflect.Value, path []string, value reflect.Value) bool {
 		}
 	}
 
-	if parentType.Kind() == reflect.Pointer {
+	if parentKind == pointerKind {
 		parent = parent.Elem()
 		parentType = parent.Type()
+		parentKind = basicKind(parent)
 	}
 
-	if parentType.Kind() == reflect.Struct {
+	switch parentKind {
+	case structKind:
 		for i := 0; i < parentType.NumField(); i++ {
 			reflectField := parentType.Field(i)
 			if reflectField.IsExported() && strcase.ToLowerCamel(reflectField.Name) == current {
@@ -120,7 +116,7 @@ func set(source reflect.Value, path []string, value reflect.Value) bool {
 				}
 			}
 		}
-	} else if parentType.Kind() == reflect.Slice || parentType.Kind() == reflect.Array {
+	case iterableKind:
 		index, err := strconv.Atoi(current)
 		if err != nil {
 			return false
@@ -130,7 +126,7 @@ func set(source reflect.Value, path []string, value reflect.Value) bool {
 		}
 		parent.Index(index).Set(value)
 		return true
-	} else if parentType.Kind() == reflect.Map {
+	case mapKind:
 		parent.SetMapIndex(reflect.ValueOf(current), value)
 		return true
 	}
@@ -150,8 +146,9 @@ func get(source reflect.Value, path []string) ([]reflect.Value, bool) {
 	}
 
 	originSource := source
-	source = reflect.ValueOf(source.Interface())
+	source = rawValue(source)
 	sourceType := source.Type()
+	sourceKind := basicKind(source)
 
 	resolve := func(result reflect.Value) ([]reflect.Value, bool) {
 		his, ok := get(result, remain)
@@ -222,7 +219,8 @@ func get(source reflect.Value, path []string) ([]reflect.Value, bool) {
 		}
 	}
 
-	if sourceType.Kind() == reflect.Struct {
+	switch sourceKind {
+	case structKind:
 		for i := 0; i < sourceType.NumField(); i++ {
 			reflectField := sourceType.Field(i)
 			if reflectField.IsExported() && strcase.ToLowerCamel(reflectField.Name) == current {
@@ -230,21 +228,21 @@ func get(source reflect.Value, path []string) ([]reflect.Value, bool) {
 				return resolve(v)
 			}
 		}
-	} else if sourceType.Kind() == reflect.Slice || sourceType.Kind() == reflect.Array {
+	case iterableKind:
 		index, err := strconv.Atoi(current)
 		if err != nil || index >= source.Len() {
 			return nil, false
 		}
 		v := source.Index(index)
 		return resolve(v)
-	} else if sourceType.Kind() == reflect.Map {
+	case mapKind:
 		for _, k := range source.MapKeys() {
 			if k.Interface() == current {
 				v := source.MapIndex(k)
 				return resolve(v)
 			}
 		}
-	} else if sourceType.Kind() == reflect.Pointer {
+	case pointerKind:
 		if his, ok := get(source.Elem(), path); ok {
 			his[len(his)-1] = source
 			return his, true
