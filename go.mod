@@ -6,7 +6,7 @@ require (
 	github.com/bxcodec/faker/v3 v3.8.1
 	github.com/iancoleman/strcase v0.2.0
 	github.com/stretchr/testify v1.8.1
-	golang.org/x/exp v0.0.0-20221111204811-129d8d6c17ab
+	golang.org/x/exp v0.0.0-20230113213754-f9f960f08ad4
 )
 
 require (
